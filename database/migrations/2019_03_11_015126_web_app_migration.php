@@ -58,7 +58,8 @@ class WebAppMigration extends Migration
       $table->string('Prev_Tick_Firmware')->nullable()->default(null);
 
       // indexes and foreign keys
-      $table->primary('CalibrationResultId');
+      //$table->primary('CalibrationResultId');
+      $table->index('CalibrationResultId');
       $table->foreign('TickBox', 'cr_tickbox_fk')->references('ToolId')->on('Tool');
       $table->foreign('Scanner', 'cr_scanner_fk')->references('ToolId')->on('Tool');
       $table->foreign('Jig', 'cr_jig_fk')->references('ToolId')->on('Tool');
