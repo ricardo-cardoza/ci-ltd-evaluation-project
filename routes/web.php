@@ -17,4 +17,6 @@ Auth::routes();
 
 Route::group(['prefix' => 'admin'], function() {
   Route::get('home', 'AdminController@index')->name('admin.home');
+  Route::get('upload', 'AdminController@upload')->name('admin.upload');
+  Route::post('import', 'AdminController@import')->name('admin.import');
 });

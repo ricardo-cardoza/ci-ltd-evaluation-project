@@ -28,9 +28,9 @@ return [
       'AAy' => ['integer', 'nullable'],
       'AAz' => ['integer', 'nullable'],
       'AOff' => ['integer', 'nullable'],
-    ]
-  ],
-  'tool_db_row' => [
-    'ToolId' => ['required', 'integer'],
+    ],
+    'tool_db_row' => [
+      'ToolId' => ['required', 'integer'],
+    ],    
   ],
 ];
