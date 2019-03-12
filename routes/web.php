@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'Auth\LoginController@showLoginForm');
+
+Auth::routes();
+
+Route::group(['prefix' => 'admin'], function() {
+  Route::get('home', 'AdminController@index')->name('admin.home');
 });

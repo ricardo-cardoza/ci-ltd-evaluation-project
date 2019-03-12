@@ -9,4 +9,9 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+# For MacOS developers
 .DS_Store
+
+# For SublimeText users
+*.sublime-workspace
