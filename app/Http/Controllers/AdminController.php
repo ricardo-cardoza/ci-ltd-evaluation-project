@@ -144,5 +144,124 @@ class AdminController extends Controller
     // No issuess
     return redirect()->route('admin.upload')->with('success', "Successfully imported SQLite database file into the Cloud database.");
 
-  }  
+  }
+
+
+  /**
+   * Show the page to send SQL query requests for the cloud database.
+   * 
+   * @return \Illuminate\Contracts\Support\Renderable
+   */ 
+  public function search() {
+
+    return view('admin/search', [
+      'queried_db' => false,
+      'no_results' => false,
+      'db_query_results' => null
+    ]);
+  } 
+
+  /**
+   * Show the page to make SQL queries to the cloud database and display the results of those queries.
+   * 
+   * @return \Illuminate\Contracts\Support\Renderable
+   */ 
+  public function query(Request $request) {
+    // Validate db query request
+    $this->validate($request, [
+      'search-query' => [ 
+        'required', 
+        'regex:/^select/i',  // Only select statements allowed
+        //'not_regex:/^(delete|update)/i' // any other kind of steatement except those that update db allowed
+      ]
+    ], $custom_validation_messages = [
+      'required' => "Enter an SQL query.",
+      'regex' => "Only 'SELECT' statements allowed here."
+    ]);
+
+    $cloud_db_sql_query = $request->get('search-query');
+
+    // Make the request to the cloud database
+    try {
+      $results = DB::connection('mysql')->select(DB::connection('mysql')->raw($cloud_db_sql_query));
+    }catch(\Exception $e) {
+      return redirect()->route('admin.search-1')->with('cloud_database_error', $e->getMessage());
+    }
+
+    // Assume no results
+    $no_results = true;
+    $db_query_results = [
+      'columns' => [],
+      'tableData' => [],
+      'options' => []
+    ];     
+
+    // If there are non-empty results, prepare the results to be transformed into 
+    // JSON objects within the view and then passed down to a Vue table component
+    if(!empty($results)) {
+      $no_results = false;
+      $transformed_results = array_map(function($row_object) {
+        return (array) $row_object;
+      }, $results);
+
+      // free up memory
+      unset($results);
+
+      // for each row, cast any properties that are large integers into strings
+      // so that they won't be rounder or truncated by JavaScript  in the view.
+      $casted_results = array_map(function(&$row) {
+        $transform_columns = [
+          'ToolId',
+          'CalibrationResultId',
+          'Voltmeter',
+          'Ammeter',
+          'Supply',
+          'Load',
+          'TickBox',
+          'Scanner',
+          'Jig',
+          'Tick_EepromRes',
+          'Tick_FlashRes',
+          'CalStatus',
+          'Tick_ProductId',
+          'AAx',
+          'AAy',
+          'AAz',
+          'AOff'
+        ];
+
+        foreach($transform_columns as $column) {
+          if(isset($row[$column]) && !is_null($row[$column])) {
+            $row[$column] = (string) $row[$column];
+          }
+        }
+
+        return $row;
+      }, $transformed_results);
+
+      // free up memory
+      unset($transformed_results);
+
+      // Get column names for table in view which will display results
+      $table_columns = array_keys($casted_results[0]);
+
+      $db_query_results = [
+        'columns' => $table_columns,
+        'tableData' => $casted_results,
+        'options' => [
+          'headings' => array_combine($table_columns, $table_columns),
+          'sortable' => $table_columns
+        ]
+      ];
+
+    }
+
+    // return results or lackthereof to the view
+    return view('admin/search', [
+      'queried_db' => true,
+      'no_results' => $no_results,
+      'db_query_results' => $db_query_results,
+      'sql_query' => $cloud_db_sql_query
+    ]);
+  } 
 }

@@ -7,7 +7,8 @@
         "vendor", 
         "node_modules",
         "storage/framework",
-        "storage/logs"
+        "storage/logs",
+        "public/js/view-scripts"
       ],
       "file_exclude_patterns": [
         "public/js/app.js",
