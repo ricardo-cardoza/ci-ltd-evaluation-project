@@ -1,71 +1,125 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Evaluation Project
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+This web app allows a user to upload an SQLite DB file with this file extension: `.db` or `.sqlite` and with [this SQLite schema](#SQLite-DB-schema) which will then be read by the web app and saved / imported onto a MySQL cloud database with [this MySQL schema](#MySQL-Cloud-DB-Schema).
 
-## About Laravel
+After the user has imported at least one SQLite DB file successfully they can then submit SQL queries via a web form to see the data that was imported from the SQLite DB file as it is saved on the cloud database. 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Upon successfully querying the cloud the database the results are then returned to the user and shown on a table. 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+#### SQLite DB schema
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+    CREATE TABLE `Tool` ( 
+      `ToolId` INTEGER, 
+      `Serial` TEXT, 
+      `Model` TEXT, 
+      `Manufacturer` TEXT, 
+      PRIMARY KEY(`ToolId`) 
+    )
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    CREATE TABLE "CalibrationResult" 
+    ( 
+      `CalibrationResultId` INTEGER, 
+      `RunTime` NUMERIC, 
+      `OperatorId` TEXT, 
+      `Voltmeter` INTEGER, 
+      `Ammeter` INTEGER, 
+      `Supply` INTEGER, 
+      `Load` INTEGER, 
+      `TickBox` INTEGER, 
+      `Scanner` INTEGER, 
+      `Jig` INTEGER, 
+      `Tick_Firmware` TEXT, 
+      `Tick_Guid` TEXT, 
+      `Tick_HwId` TEXT, 
+      `Tick_BatchId` INTEGER, 
+      `Tick_Count` INTEGER, 
+      `Tick_Serial` TEXT, 
+      `Tick_AccelRes` INTEGER, 
+      `Tick_VoltCalScale` REAL, 
+      `Tick_VoltCalOffset` REAL, 
+      `Tick_CurrCalScale` REAL, 
+      `Tick_CurrCalOffset` REAL, 
+      `Tick_EepromRes` INTEGER, 
+      `Tick_FlashRes` INTEGER, 
+      `CalStatus` INTEGER, 
+      `Tick_ProductId` INTEGER, 
+      `EndTime` NUMERIC, 
+      `AAx` INTEGER, 
+      `AAy` INTEGER, 
+      `AAz` INTEGER, 
+      `AOff` INTEGER, 
+      `FlashId` TEXT, 
+      `Prev_Tick_Firmware` TEXT, 
+      FOREIGN KEY(`TickBox`) REFERENCES `Tool`(`ToolId`), 
+      PRIMARY KEY(`CalibrationResultId`), 
+      FOREIGN KEY(`Scanner`) REFERENCES `Tool`(`ToolId`), 
+      FOREIGN KEY(`Jig`) REFERENCES `Tool`(`ToolId`), 
+      FOREIGN KEY(`Supply`) REFERENCES `Tool`(`ToolId`), 
+      FOREIGN KEY(`Load`) REFERENCES `Tool`(`ToolId`), 
+      FOREIGN KEY(`Voltmeter`) REFERENCES `Tool`(`ToolId`), 
+      FOREIGN KEY(`Ammeter`) REFERENCES `Tool`(`ToolId`) 
+    )
+    
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost you and your team's skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+#### (MySQL) Cloud DB Schema
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
+    CREATE TABLE `CalibrationResult` (
+      `CalibrationResultId` bigint(20) NOT NULL,
+      `RunTime` datetime DEFAULT NULL,
+      `OperatorId` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Voltmeter` bigint(20) DEFAULT NULL,
+      `Ammeter` bigint(20) DEFAULT NULL,
+      `Supply` bigint(20) DEFAULT NULL,
+      `Load` bigint(20) DEFAULT NULL,
+      `TickBox` bigint(20) DEFAULT NULL,
+      `Scanner` bigint(20) DEFAULT NULL,
+      `Jig` bigint(20) DEFAULT NULL,
+      `Tick_Firmware` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Tick_Guid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Tick_HwId` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Tick_BatchId` int(11) DEFAULT NULL,
+      `Tick_Count` int(11) DEFAULT NULL,
+      `Tick_Serial` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Tick_AccelRes` int(11) DEFAULT NULL,
+      `Tick_VoltCalScale` decimal(20,10) DEFAULT NULL,
+      `Tick_VoltCalOffset` decimal(20,10) DEFAULT NULL,
+      `Tick_CurrCalScale` decimal(20,10) DEFAULT NULL,
+      `Tick_CurrCalOffset` decimal(20,10) DEFAULT NULL,
+      `Tick_EepromRes` int(11) DEFAULT NULL,
+      `Tick_FlashRes` int(11) DEFAULT NULL,
+      `CalStatus` int(11) DEFAULT NULL,
+      `Tick_ProductId` int(11) DEFAULT NULL,
+      `EndTime` datetime DEFAULT NULL,
+      `AAx` int(11) DEFAULT NULL,
+      `AAy` int(11) DEFAULT NULL,
+      `AAz` int(11) DEFAULT NULL,
+      `AOff` int(11) DEFAULT NULL,
+      `FlashId` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Prev_Tick_Firmware` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      KEY `calibrationresult_calibrationresultid_index` (`CalibrationResultId`),
+      KEY `cr_tickbox_fk` (`TickBox`),
+      KEY `cr_scanner_fk` (`Scanner`),
+      KEY `cr_jig_fk` (`Jig`),
+      KEY `cr_supply_fk` (`Supply`),
+      KEY `cr_load_fk` (`Load`),
+      KEY `cr_voltmeter_fk` (`Voltmeter`),
+      KEY `cr_ammeter_fk` (`Ammeter`),
+      CONSTRAINT `cr_ammeter_fk` FOREIGN KEY (`Ammeter`) REFERENCES `Tool` (`ToolId`),
+      CONSTRAINT `cr_jig_fk` FOREIGN KEY (`Jig`) REFERENCES `Tool` (`ToolId`),
+      CONSTRAINT `cr_load_fk` FOREIGN KEY (`Load`) REFERENCES `Tool` (`ToolId`),
+      CONSTRAINT `cr_scanner_fk` FOREIGN KEY (`Scanner`) REFERENCES `Tool` (`ToolId`),
+      CONSTRAINT `cr_supply_fk` FOREIGN KEY (`Supply`) REFERENCES `Tool` (`ToolId`),
+      CONSTRAINT `cr_tickbox_fk` FOREIGN KEY (`TickBox`) REFERENCES `Tool` (`ToolId`),
+      CONSTRAINT `cr_voltmeter_fk` FOREIGN KEY (`Voltmeter`) REFERENCES `Tool` (`ToolId`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    CREATE TABLE `Tool` (
+      `ToolId` bigint(20) NOT NULL,
+      `Serial` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Model` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      `Manufacturer` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+      PRIMARY KEY (`ToolId`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
