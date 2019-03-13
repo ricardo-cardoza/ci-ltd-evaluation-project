@@ -59,6 +59,9 @@ class AdminController extends Controller
     // Validate file upload request
     $this->validate($request, [
       'file-upload' => [ 'required', 'file', 'mimetypes:application/x-sqlite3' ]
+    ], $custom_validation_messages = [
+      'required' => "Upload an SQLite DB File.",
+      'file' => "Upload an SQLite DB File."
     ]);
 
     // Once validation passes store SQLite upload

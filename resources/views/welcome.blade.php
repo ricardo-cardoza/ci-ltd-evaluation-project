@@ -68,7 +68,8 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/admin/home') }}">Home</a>
+                        <a href="{{ url('/admin/upload') }}">Upload SQLite DB File</a>
+                        <a href="{{ url('/admin/search') }}">Search Cloud DB</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
 

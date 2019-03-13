@@ -77,6 +77,8 @@
           <div id="app">
             <v-client-table :data="tableData" :columns="columns" :options="options" ref="queryResultsTable" v-if="queriedDB && !noResults"></v-client-table>
           </div>
+
+          <p><a href="{{ route('admin.upload') }}" title="Upload an SQLite DB File">Have another SQLite DB File to upload?</a></p>
         </div>
       </div>
     </div>

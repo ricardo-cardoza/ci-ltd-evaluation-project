@@ -60,7 +60,9 @@
             </div>
 
           </form>
-          
+
+          <br>
+          <p><a href="{{ route('admin.search-1') }}" title="Search Cloud DB">Already uploaded an SQLite DB File? Search the Cloud DB.</a></p>
         </div>
       </div>
     </div>
