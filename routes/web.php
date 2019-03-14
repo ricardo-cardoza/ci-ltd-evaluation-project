@@ -25,4 +25,7 @@ Route::group(['prefix' => 'admin'], function() {
   Route::get('query', 'AdminController@search')->name('admin.search-2');
   
   Route::post('query', 'AdminController@query')->name('admin.query');
+
+  Route::get('clear-db', 'AdminController@clearDB')->name('admin.clear-db');
+  Route::post('destroy', 'AdminController@destroy')->name('admin.destroy');
 });

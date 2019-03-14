@@ -38,7 +38,7 @@
             <div class="form-group row mb-0">
               <div class="col-md-12">
                 <button type="submit" class="btn btn-primary">Submit</button>
-                <a href="{{ route('admin.search-1') }}" class="btn btn-light" title="Clear Results">Clear Results</a>
+                <a href="{{ route('admin.search-1') }}" class="btn btn-light" title="Clear Results">Clear Queried Results</a>
               </div>
             </div>
 
@@ -79,6 +79,8 @@
           </div>
 
           <p><a href="{{ route('admin.upload') }}" title="Upload an SQLite DB File">Have another SQLite DB File to upload?</a></p>
+
+          <p><a href="{{ route('admin.clear-db') }}" title="Delete All Data From Cloud DB">OR do you want to start over again by deleting all the imported data from the Cloud DB?</a></p>
         </div>
       </div>
     </div>

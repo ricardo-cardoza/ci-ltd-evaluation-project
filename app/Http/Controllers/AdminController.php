@@ -266,5 +266,40 @@ class AdminController extends Controller
       'db_query_results' => $db_query_results,
       'sql_query' => $cloud_db_sql_query
     ]);
-  } 
+  }
+
+  /**
+   * Show the web page with a form to request that cloud database be emptied.
+   * 
+   * @return \Illuminate\Contracts\Support\Renderable
+   */ 
+  public function clearDB() {
+    return view('admin/clear-db');
+  }
+
+  /**
+   * Destroy all the data in the cloud database.
+   * 
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function destroy(Request $request) {
+
+    $confirmation = $request->get('clear_db_confirmation');
+
+    if($confirmation == 'yes') {
+      // Make the request remove data from the cloud database
+      try {
+        DB::connection('mysql')->statement('SET FOREIGN_KEY_CHECKS=0');
+        DB::connection('mysql')->table('CalibrationResult')->truncate();
+        DB::connection('mysql')->table('Tool')->truncate();
+        DB::connection('mysql')->statement('SET FOREIGN_KEY_CHECKS=1');
+
+        return redirect()->route('admin.clear-db')->with('success', "Deleted all the data from the cloud database.");
+      }catch(\Exception $e) {
+        return redirect()->route('admin.clear-db')->with('cloud_database_error', $e->getMessage());
+      }      
+    }
+
+    return redirect()->route('admin.clear-db')->with('info', "Made no changes to the cloud database.");
+  }    
 }
